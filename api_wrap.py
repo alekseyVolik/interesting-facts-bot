@@ -2,7 +2,9 @@ from datetime import date
 
 
 from requests import get
-from requests import Response
+
+from models import WikipediaOnThisDay
+from marshmallow_schemas import WikipediaOnThisDaySchema
 
 
 class OnThisDayAPIWrap:
@@ -15,23 +17,23 @@ class OnThisDayAPIWrap:
     def __init__(self):
         self.url = 'https://byabbe.se/on-this-day'
 
-    def get_fact_about_day(self, month: int, day: int) -> Response:
+    def get_fact_about_day(self, month: int, day: int) -> WikipediaOnThisDay:
         """
-        Returns response of 'on this day' service, that
-        contains json-object with events list corresponding
+        Returns the model represents of 'on this day' service, by
         required month and day
         :param int month: required month
         :param int day: required day
-        :return requests.Response: answer of service
+        :return models.WikipediaOnThisDay on_this_day_model: answer of service
         """
-        return get(url=f'{self.url}/{month}/{day}/events.json')
+        response = get(url=f'{self.url}/{month}/{day}/events.json')
+        on_this_day_model = WikipediaOnThisDaySchema().load(response.json())
+        return on_this_day_model
 
-    def get_fact_about_today_day(self) -> Response:
+    def get_fact_about_today_day(self) -> WikipediaOnThisDay:
         """
-        Returns response of 'on this day' service, that
-        contains json-object with events list corresponding
+        Returns the model represents of 'on this day' service, by
         required current day
-        :return requests.Response: answer of service
+        :return models.WikipediaOnThisDay: answer of service
         """
         current_day = date.today()
         return self.get_fact_about_day(month=current_day.month, day=current_day.day)
