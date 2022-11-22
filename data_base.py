@@ -9,7 +9,7 @@ Base = declarative_base()
 
 
 class TelegramChat(Base):
-    __table_name__ = "telegram_chat"
+    __tablename__ = "telegram_chat"
 
     _id = Column(Integer, primary_key=True)
     chat_id = Column(String(20))
