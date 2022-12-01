@@ -1,10 +1,12 @@
-from typing import Dict
+from typing import Dict, Generator
+import re
 
 from telegram import Chat, User
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from data_base import engine, TelegramChat
+from models import WikipediaEvent
 
 
 def get_administrators(telegram_chat: Chat) -> Dict[int, User]:
@@ -34,3 +36,31 @@ def change_enable_fact_delivery(chat_id: int,
         else:
             session.add(TelegramChat(chat_id=chat_id, receive_fact=delivery_fact))
         session.commit()
+
+
+def get_chat_ids_for_delivery() -> Generator[int, None, None]:
+    """
+    It is yielding telegram chat ids that have are
+    enabled delivery the 'on this day' message
+    """
+    with Session(engine) as session:
+        query_result = session.execute(select(TelegramChat.chat_id))
+        for chat_id in query_result.scalars():
+            yield chat_id
+
+
+def prepare_message_with_markdown_v2(event: WikipediaEvent) -> str:
+    """
+    Prepare wikipedia event description text for markdown_v2
+    escaping the special chars '_*[]()~`>#+-=|{}.!'. If somewhat
+    is matches exactly (by symbol register too) by wikipedia link
+    this text will be replaced to Markdown link
+    :param event: WikipediaEvent
+    :return: Formatted text for send with markdown_v2 method
+    """
+    escape_chars = '_*[]()~`>#+-=|{}.!'
+    event_description = re.sub(f'([{re.escape(escape_chars)}])', r'\\\1', event.description)
+    for wiki_link in event.wikipedia:
+        event_description = event_description.replace(
+            wiki_link.title, rf'[{wiki_link.title}]({wiki_link.wikipedia})')
+    return event_description
