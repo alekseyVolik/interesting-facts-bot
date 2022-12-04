@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+from random import choice
 
 
 @dataclass
@@ -7,6 +8,9 @@ class WikipediaOnThisDay:
     date: str
     wikipedia: str
     events: List['WikipediaEvent']
+
+    def get_random_event(self) -> 'WikipediaEvent':
+        return choice(self.events)
 
 
 @dataclass
