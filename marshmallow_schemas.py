@@ -1,35 +1,29 @@
-from marshmallow import Schema, fields, post_load
+from marshmallow import Schema, fields, post_load, EXCLUDE
 
 
 from models import (
-    WikipediaOnThisDay, WikipediaEvent, WikipediaLink
+    WikipediaOnThisDay, WikipediaSelectedEvents
 )
 
 
 class WikipediaOnThisDaySchema(Schema):
-    date = fields.Str()
-    wikipedia = fields.Str()
-    events = fields.List(fields.Nested('WikipediaEventSchema'))
+    selected = fields.List(fields.Nested('WikipediaEventSchema'))
 
     @post_load
     def make_wikipedia_on_this_day(self, data, **kwargs) -> WikipediaOnThisDay:
         return WikipediaOnThisDay(**data)
 
+    class Meta:
+        unknown = EXCLUDE
+
 
 class WikipediaEventSchema(Schema):
-    year = fields.Str()
-    description = fields.Str()
-    wikipedia = fields.List(fields.Nested('WikipediaLinkSchema'))
+    text = fields.Str()
+    year = fields.Int()
 
     @post_load
-    def make_wikipedia_event(self, data, **kwargs) -> WikipediaEvent:
-        return WikipediaEvent(**data)
+    def make_wikipedia_event(self, data, **kwargs) -> WikipediaSelectedEvents:
+        return WikipediaSelectedEvents(**data)
 
-
-class WikipediaLinkSchema(Schema):
-    title = fields.Str()
-    wikipedia = fields.Str()
-
-    @post_load
-    def make_wikipedia_link(self, data, **kwargs) -> WikipediaLink:
-        return WikipediaLink(**data)
+    class Meta:
+        unknown = EXCLUDE
