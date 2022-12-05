@@ -1,26 +1,19 @@
 from dataclasses import dataclass
 from typing import List
-from random import choice
 
 
 @dataclass
 class WikipediaOnThisDay:
-    date: str
-    wikipedia: str
-    events: List['WikipediaEvent']
+    selected: List['WikipediaSelectedEvents']
+    web_link: str = ''
 
-    def get_random_event(self) -> 'WikipediaEvent':
-        return choice(self.events)
-
-
-@dataclass
-class WikipediaEvent:
-    year: str
-    description: str
-    wikipedia: List['WikipediaLink']
+    def __post_init__(self):
+        self.selected = sorted(self.selected,
+                               key=lambda event: event.year,
+                               reverse=True)
 
 
 @dataclass
-class WikipediaLink:
-    title: str
-    wikipedia: str
+class WikipediaSelectedEvents:
+    text: str
+    year: int
