@@ -70,9 +70,17 @@ def wiki_cyrillic_link_generation() -> str:
     Generate a wiki link to the 'on this day' RU-lang wiki page
     :return: str that represent link to page
     """
+    today = date.today()
+    return f'https://ru.wikipedia.org/wiki/{today.day}_{quote(get_month_name(today.month))}'
+
+
+def get_month_name(month: int) -> str:
+    """
+    Return ru-lang name of month
+    :param month: number of month from 1 to 12
+    :return: str of RU-lang month name
+    """
     month_name_map = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля',
                       5: 'мая', 6: 'июня', 7: 'июля', 8: 'августа',
                       9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
-    today = date.today()
-    current_month_name = month_name_map[today.month]
-    return f'https://ru.wikipedia.org/wiki/{today.day}_{quote(current_month_name)}'
+    return month_name_map[month]
