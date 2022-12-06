@@ -1,12 +1,14 @@
 from typing import Dict, Generator
 import re
+from datetime import date
+from urllib.parse import quote
 
 from telegram import Chat, User
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from data_base import engine, TelegramChat
-from models import WikipediaEvent
+from models import WikipediaSelectedEvents
 
 
 def get_administrators(telegram_chat: Chat) -> Dict[int, User]:
@@ -64,3 +66,17 @@ def prepare_message_with_markdown_v2(event: WikipediaEvent) -> str:
         event_description = event_description.replace(
             wiki_link.title, rf'[{wiki_link.title}]({wiki_link.wikipedia})')
     return event_description
+
+
+def wiki_cyrillic_link_generation() -> str:
+    """
+    Generate a wiki link to the 'on this day' RU-lang wiki page
+    :return: str that represent link to page
+    """
+    month_map = {int_key: name for
+                 int_key, name in
+                 enumerate(['января', 'февраля', 'марта', 'апреля', 'мая', 'июня'
+                            , 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+                           start=1)}
+    current_month_name = month_map[date.today().month]
+    return f'https://ru.wikipedia.org/wiki/4_{quote(current_month_name)}'
