@@ -51,7 +51,7 @@ def get_chat_ids_for_delivery() -> Generator[int, None, None]:
             yield chat_id
 
 
-def prepare_message_with_markdown_v2(event: WikipediaEvent) -> str:
+def prepare_message_with_markdown_v2(event: WikipediaSelectedEvents) -> str:
     """
     Prepare wikipedia event description text for markdown_v2
     escaping the special chars '_*[]()~`>#+-=|{}.!'. If somewhat
@@ -61,10 +61,7 @@ def prepare_message_with_markdown_v2(event: WikipediaEvent) -> str:
     :return: Formatted text for send with markdown_v2 method
     """
     escape_chars = '_*[]()~`>#+-=|{}.!'
-    event_description = re.sub(f'([{re.escape(escape_chars)}])', r'\\\1', event.description)
-    for wiki_link in event.wikipedia:
-        event_description = event_description.replace(
-            wiki_link.title, rf'[{wiki_link.title}]({wiki_link.wikipedia})')
+    event_description = re.sub(f'([{re.escape(escape_chars)}])', r'\\\1', event.text)
     return event_description
 
 
@@ -73,10 +70,9 @@ def wiki_cyrillic_link_generation() -> str:
     Generate a wiki link to the 'on this day' RU-lang wiki page
     :return: str that represent link to page
     """
-    month_map = {int_key: name for
-                 int_key, name in
-                 enumerate(['января', 'февраля', 'марта', 'апреля', 'мая', 'июня'
-                            , 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
-                           start=1)}
-    current_month_name = month_map[date.today().month]
-    return f'https://ru.wikipedia.org/wiki/4_{quote(current_month_name)}'
+    month_name_map = {1: 'января', 2: 'февраля', 3: 'марта', 4: 'апреля',
+                      5: 'мая', 6: 'июня', 7: 'июля', 8: 'августа',
+                      9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
+    today = date.today()
+    current_month_name = month_name_map[today.month]
+    return f'https://ru.wikipedia.org/wiki/{today.day}_{quote(current_month_name)}'
