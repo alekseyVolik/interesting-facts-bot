@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from data_base import engine, TelegramChat
-from models import WikipediaSelectedEvents
+from models import WikipediaEvents
 
 
 def get_administrators(telegram_chat: Chat) -> Dict[int, User]:
@@ -51,13 +51,14 @@ def get_chat_ids_for_delivery() -> Generator[int, None, None]:
             yield chat_id
 
 
-def wiki_cyrillic_link_generation() -> str:
+def wiki_cyrillic_link_generation(day: int, month: int) -> str:
     """
     Generate a wiki link to the 'on this day' RU-lang wiki page
+    :param day: number of day
+    :param month: number of month
     :return: str that represent link to page
     """
-    today = date.today()
-    return f'https://ru.wikipedia.org/wiki/{today.day}_{quote(get_month_name(today.month))}'
+    return f'https://ru.wikipedia.org/wiki/{day}_{quote(get_month_name(month))}'
 
 
 def get_month_name(month: int) -> str:
@@ -70,3 +71,17 @@ def get_month_name(month: int) -> str:
                       5: 'мая', 6: 'июня', 7: 'июля', 8: 'августа',
                       9: 'сентября', 10: 'октября', 11: 'ноября', 12: 'декабря'}
     return month_name_map[month]
+
+
+def generate_events_message(events: List[WikipediaEvents]) -> str:
+    """
+    Create message for sending to chat information about 'on this
+    day' events. This message formatted with html markup
+    :param events: List of events
+    :return: str, message that contains list of events
+    """
+    today = date.today()
+    message_header = (f'События, произошедшие <a href="{wiki_cyrillic_link_generation(today.day, today.month)}">'
+                      f'{today.day} {get_month_name(today.month)}:</a>')
+    message_body = '\n'.join(f'&#x2022 <b>{event.year}</b> &#x2014 {event.text}' for event in events)
+    return f'{message_header}\n\n{message_body}'
