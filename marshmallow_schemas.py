@@ -2,12 +2,12 @@ from marshmallow import Schema, fields, post_load, EXCLUDE
 
 
 from models import (
-    WikipediaOnThisDay, WikipediaSelectedEvents
+    WikipediaOnThisDay, WikipediaEvents
 )
 
 
 class WikipediaOnThisDaySchema(Schema):
-    selected = fields.List(fields.Nested('WikipediaEventSchema'))
+    events = fields.List(fields.Nested('WikipediaEventSchema'))
 
     @post_load
     def make_wikipedia_on_this_day(self, data, **kwargs) -> WikipediaOnThisDay:
@@ -22,8 +22,8 @@ class WikipediaEventSchema(Schema):
     year = fields.Int()
 
     @post_load
-    def make_wikipedia_event(self, data, **kwargs) -> WikipediaSelectedEvents:
-        return WikipediaSelectedEvents(**data)
+    def make_wikipedia_event(self, data, **kwargs) -> WikipediaEvents:
+        return WikipediaEvents(**data)
 
     class Meta:
         unknown = EXCLUDE

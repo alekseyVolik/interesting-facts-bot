@@ -26,7 +26,7 @@ class OnThisDayAPIWrap:
         :param int day: required day
         :return models.WikipediaOnThisDay on_this_day_model: answer of service
         """
-        _lang, _type = 'ru', 'selected'
+        _lang, _type = 'ru', 'events'
         month, day = f'{month:0>2d}', f'{day:0>2d}'
         response = get(url=f'{self.url}/feed/v1/wikipedia/{_lang}/onthisday/{_type}/{month}/{day}')
         on_this_day_model = WikipediaOnThisDaySchema().load(response.json())
