@@ -1,4 +1,4 @@
-from typing import Dict, Generator
+from typing import Dict, Generator, List
 import re
 from datetime import date
 from urllib.parse import quote
@@ -49,20 +49,6 @@ def get_chat_ids_for_delivery() -> Generator[int, None, None]:
         query_result = session.execute(select(TelegramChat.chat_id))
         for chat_id in query_result.scalars():
             yield chat_id
-
-
-def prepare_message_with_markdown_v2(event: WikipediaSelectedEvents) -> str:
-    """
-    Prepare wikipedia event description text for markdown_v2
-    escaping the special chars '_*[]()~`>#+-=|{}.!'. If somewhat
-    is matches exactly (by symbol register too) by wikipedia link
-    this text will be replaced to Markdown link
-    :param event: WikipediaEvent
-    :return: Formatted text for send with markdown_v2 method
-    """
-    escape_chars = '_*[]()~`>#+-=|{}.!'
-    event_description = re.sub(f'([{re.escape(escape_chars)}])', r'\\\1', event.text)
-    return event_description
 
 
 def wiki_cyrillic_link_generation() -> str:
