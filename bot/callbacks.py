@@ -1,4 +1,4 @@
-from telegram import Update
+from telegram import Update, ParseMode
 from telegram.ext import CallbackContext
 
 from bot.data import MessageTemplate, BotCommandName
@@ -6,7 +6,8 @@ from utils.api_wrap import OnThisDayAPIWrap
 from utils.helpers import (
     get_administrators,
     change_enable_fact_delivery,
-    get_chat_ids_for_delivery
+    get_chat_ids_for_delivery,
+    generate_events_message
 )
 from app_config import AppConfig
 
@@ -25,11 +26,10 @@ def about_bot(update: Update,
 def send_random_daily_fact(context: CallbackContext) -> None:
     """Send random daily fact from REST-API wikipedia 'on this day'"""
     bot = context.bot
-    events = OnThisDayAPIWrap().get_fact_about_today_day()
+    day_info = OnThisDayAPIWrap().get_fact_about_today_day()
+    text = generate_events_message(events=day_info.events)
     for chat_id in get_chat_ids_for_delivery():
-        event = events.get_random_event()
-        text = event.description
-        bot.send_message(chat_id=chat_id, text=text)
+        bot.send_message(chat_id=chat_id, text=text, parse_mode=ParseMode.HTML)
 
 
 def enable_daily_fact_message(update: Update,
