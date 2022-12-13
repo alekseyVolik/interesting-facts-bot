@@ -8,9 +8,9 @@ class WikipediaOnThisDay:
     web_link: str = ''
 
     def __post_init__(self):
-        self.selected = sorted(self.events,
-                               key=lambda event: event.year,
-                               reverse=True)
+        self.events = sorted(self.events,
+                             key=lambda event: event.year,
+                             reverse=True)
 
 
 @dataclass
