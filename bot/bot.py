@@ -1,6 +1,6 @@
 from telegram.ext import Updater, CommandHandler
 
-from bot.telegram_callback import (
+from bot.callbacks import (
     disable_daily_fact_message,
     enable_daily_fact_message,
     about_bot,
