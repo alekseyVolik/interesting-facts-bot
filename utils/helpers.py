@@ -1,5 +1,4 @@
 from typing import Dict, Generator, List
-import re
 from datetime import date
 from urllib.parse import quote
 
@@ -7,8 +6,8 @@ from telegram import Chat, User
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
-from data_base import engine, TelegramChat
-from models import WikipediaEvents
+from db.alchemy import engine, TelegramChat
+from models.models import WikipediaEvents
 
 
 def get_administrators(telegram_chat: Chat) -> Dict[int, User]:

@@ -2,8 +2,8 @@ from telegram import Update
 from telegram.ext import CallbackContext
 
 from bot.data import MessageTemplate, BotCommandName
-from api_wrap import OnThisDayAPIWrap
-from bot.helpers import (
+from utils.api_wrap import OnThisDayAPIWrap
+from utils.helpers import (
     get_administrators,
     change_enable_fact_delivery,
     get_chat_ids_for_delivery

@@ -3,8 +3,8 @@ from datetime import date
 
 from requests import get
 
-from models import WikipediaOnThisDay
-from marshmallow_schemas import WikipediaOnThisDaySchema
+from models.models import WikipediaOnThisDay
+from models.schemas import WikipediaOnThisDaySchema
 
 
 class OnThisDayAPIWrap:

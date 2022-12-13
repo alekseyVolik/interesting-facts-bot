@@ -1,7 +1,6 @@
 from marshmallow import Schema, fields, post_load, EXCLUDE
 
-
-from models import (
+from models.models import (
     WikipediaOnThisDay, WikipediaEvents
 )
 
